@@ -25,6 +25,7 @@
 
         extraEmacsPackages = epkgs: with epkgs; [
           treesit-grammars.with-all-grammars
+          base16-theme
         ];
       };
     in {
