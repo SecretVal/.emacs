@@ -20,7 +20,7 @@
       myEmacs = pkgs.emacsWithPackagesFromUsePackage {
         package = pkgs.emacs-unstable-pgtk;
         config = ./config.el;
-        defaultInitFile = true;
+        defaultInitFile = false;
         alwaysEnsure = true;
 
         extraEmacsPackages = epkgs: with epkgs; [
