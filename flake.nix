@@ -22,6 +22,10 @@
         config = ./config.el;
         defaultInitFile = true;
         alwaysEnsure = true;
+
+        extraEmacsPackages = epkgs: with epkgs; [
+          treesit-grammars.with-all-grammars
+        ];
       };
     in {
       packages.${system}.default = myEmacs;
