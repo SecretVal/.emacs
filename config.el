@@ -149,3 +149,10 @@
 (use-package direnv
   :config
   (direnv-mode))
+
+(use-package gruvbox-theme
+    :config
+    (load-theme 'gruvbox-dark-medium :no-confirm))
+
+(set-frame-parameter nil 'alpha-background 80)
+(add-to-list 'default-frame-alist '(alpha-background . 80))

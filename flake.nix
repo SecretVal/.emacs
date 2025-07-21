@@ -20,12 +20,11 @@
       myEmacs = pkgs.emacsWithPackagesFromUsePackage {
         package = pkgs.emacs-unstable-pgtk;
         config = ./config.el;
-        defaultInitFile = false;
+        defaultInitFile = true;
         alwaysEnsure = true;
 
         extraEmacsPackages = epkgs: with epkgs; [
           treesit-grammars.with-all-grammars
-          base16-theme
         ];
       };
     in {
