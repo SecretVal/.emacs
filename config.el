@@ -16,6 +16,8 @@
 (which-key-mode 1)
 (global-auto-revert-mode)
 
+(setq-default show-trailing-whitespace t)
+
 (defun c/org-hook ()
   (org-indent-mode))
 (use-package move-text
