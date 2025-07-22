@@ -16,19 +16,6 @@
 (which-key-mode 1)
 (global-auto-revert-mode)
 
-(use-package evil
-  :init
-  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-  (setq evil-want-keybinding nil)
-  :init (evil-mode 1))
-
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init)
-  )
-
-
 (defun c/org-hook ()
   (org-indent-mode))
 (use-package move-text
