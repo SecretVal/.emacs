@@ -3,9 +3,8 @@
 (scroll-bar-mode 0)
 (column-number-mode 1)
 (show-paren-mode 1)
-(setq inhibit-startup-message t) 
-(setq initial-scratch-message nil)
 
+(setq initial-buffer-choice t)
 (setq make-backup-files nil)
 
 (global-display-line-numbers-mode 1)
@@ -18,8 +17,25 @@
 
 (setq-default show-trailing-whitespace t)
 
+(savehist-mode 1)
+(recentf-mode 1)
+(global-eldoc-mode 1)
+
+(use-package evil
+  :init
+  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  (setq evil-want-keybinding nil)
+  :init (evil-mode 1))
+
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init)
+  )
+
 (defun c/org-hook ()
   (org-indent-mode))
+
 (use-package move-text
   :config
   (global-set-key (kbd "M-p") 'move-text-up)
@@ -44,7 +60,7 @@
 
 (u/keys
   "k" 'compile
-  "j" 'recompile 
+  "j" 'recompile
   "i" 'ibuffer
   "c" 'count-words
   "s i" 'mc/edit-lines
@@ -90,7 +106,7 @@
   (corfu-auto-prefix 2)
   (corfu-auto-delay 0.0)
   (corfu-echo-documentation 0.25)
-  (corfu-preview-curremt 'insert)
+  (corfu-preview-current 'insert)
   (corfu-preselect-first nil)
   :init
   (global-corfu-mode))
@@ -120,8 +136,8 @@
     "p" 'projectile-command-map)
   :init
   (when (file-directory-p "~/Documents/coding")
-    (setq projectiles-project-search-path '("~/Documents/coding")))
-  (setq projectiles-switch-project-action #'projectile-dired))
+    (setq projectile-project-search-path '("~/Documents/coding")))
+  (setq projectile-switch-project-action #'projectile-dired))
 
 (use-package org
   :hook (org-mode . c/org-hook)
@@ -139,9 +155,6 @@
   :config
   (direnv-mode))
 
-(use-package gruvbox-theme
-    :config
-    (load-theme 'gruvbox-dark-medium :no-confirm))
-
-(set-frame-parameter nil 'alpha-background 80)
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(use-package color-theme-sanityinc-tomorrow
+  :init
+  (load-theme 'sanityinc-tomorrow-bright :no-confirm))
