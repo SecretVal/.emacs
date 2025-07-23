@@ -23,8 +23,11 @@
         defaultInitFile = true;
         alwaysEnsure = true;
 
-        extraEmacsPackages = epkgs: with epkgs; [
-          treesit-grammars.with-all-grammars
+        extraEmacsPackages = epkgs: with pkgs; [
+          (with epkgs; [
+            treesit-grammars.with-all-grammars
+          ])
+          graphviz
         ];
       };
     in {

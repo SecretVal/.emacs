@@ -23,27 +23,47 @@
 
 (use-package evil
   :init
-  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
-  :init (evil-mode 1))
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-i-jump nil)
+  :config
+  (evil-mode 1)
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal))
 
 (use-package evil-collection
   :after evil
   :config
-  (evil-collection-init)
-  )
+  (evil-collection-init))
 
-(defun c/org-hook ()
-  (org-indent-mode))
+(use-package general
+  :demand t
+  :config
+  (general-create-definer keys
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC"))
+
+(use-package which-key
+  :ensure nil
+  :init (which-key-mode))
 
 (use-package move-text
   :config
-  (global-set-key (kbd "M-p") 'move-text-up)
-  (global-set-key (kbd "M-n") 'move-text-down)
-  )
+  (global-set-key (kbd "M-K") 'move-text-up)
+  (global-set-key (kbd "M-J") 'move-text-down))
 
 (use-package beacon
-  :config (beacon-mode))
+  :config
+  (beacon-mode))
 
 (use-package dired
   :ensure nil
@@ -51,110 +71,100 @@
   dired-listing-switches "-alh"
   dired-mouse-drag-files t
   :init
-  (setq-default dired-dwim-target t))
+  (setq-default dired-dwim-target t)
+  :config
+  (keys
+    "f" 'find-files))
 
 (use-package multiple-cursors)
-(use-package general)
-(general-create-definer u/keys
-  :prefix "C-c")
-
-(u/keys
-  "k" 'compile
-  "j" 'recompile
-  "i" 'ibuffer
-  "c" 'count-words
-  "s i" 'mc/edit-lines
-  "s a" 'mc/mark-all-like-this
-  "s n" 'mc/mark-next-like-this
-  "s p" 'mc/mark-previous-like-this
-  "s l n" 'mc/mark-next-lines
-  "s l p" 'mc/mark-previous-lines
-  )
-
-
-(use-package hydra)
-
-(defhydra hydra-text-scale (:timeout 4)
-  "scale text"
-  ("j" text-scale-increase "in")
-  ("k" text-scale-decrease "out")
-  ("f" nil "finished" :exit t)
-  )
 
 (use-package marginalia
-  :init
+  :config
   (marginalia-mode))
 
-;; Enable vertico
 (use-package vertico
-  :custom
-  (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
-  (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
   :init
+  (setq vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+  (setq vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
+  :config
   (vertico-mode))
 
 (use-package consult
   :config
-  (u/keys
-    "b" 'consult-buffer
-    ))
+  (keys
+   "b" 'consule-buffers))
 
 (use-package corfu
-  :custom
-  (corfu-cycle t)
-  (corfu-auto t)
-  (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.0)
-  (corfu-echo-documentation 0.25)
-  (corfu-preview-current 'insert)
-  (corfu-preselect-first nil)
   :init
+  (setq corfu-cycle t)
+  (setq corfu-auto t)
+  (setq corfu-auto-prefix 2)
+  (setq corfu-auto-delay 0.0)
+  (setq corfu-echo-documentation 0.25)
+  (setq corfu-preview-current 'insert)
+  (setq corfu-preselect-first nil)
+  :config
   (global-corfu-mode))
 
 (use-package orderless
-  :ensure t
-  :custom
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion)))))
+  :init
+  (setq completion-styles '(orderless basic))
+  (setq completion-category-overrides '((file (styles basic partial-completion)))))
 
 (use-package yasnippet
   :config
   (yas-global-mode 1))
 
 (use-package magit
-  :init
-  (magit-auto-revert-mode)
   :config
-  (u/keys
-    "gs" 'magit))
+  (magit-auto-revert-mode)
+  (keys
+   "g s" 'magit))
+
+(use-package magit-todos
+  :after magit
+  :config
+  (magit-todos-mode 1))
+
+(use-package forge
+  :after magit)
 
 (use-package projectile
-  :diminish projectile-mode
-  :config
-  (projectile-mode)
-  (u/keys
-    "p" 'projectile-command-map)
   :init
   (when (file-directory-p "~/Documents/coding")
     (setq projectile-project-search-path '("~/Documents/coding")))
-  (setq projectile-switch-project-action #'projectile-dired))
+  (setq projectile-switch-project-action #'projectile-dired)
+  :config
+  (projectile-mode)
+  (keys
+   "p" 'projectile-command-map))
 
 (use-package org
-  :hook (org-mode . c/org-hook)
-  :custom
-  org-startup-indented t
-  )
+  :init
+  (setq org-startup-indented t))
 
-(use-package org-superstar
+(use-package org-roam
   :after org
-  :custom
-  (org-superstar-leading-bullet " ")
-  :hook (org-mode . org-superstar-mode))
+  :init
+  (setq org-roam-directory "~/org-roam/")
+  :config
+  (org-roam-db-autosync-mode))
+
+(use-package org-modern
+  :after org
+  :init
+  (setq org-modern-star 'replace)
+  :config
+  (global-org-modern-mode))
+
+(use-package nix-ts-mode
+  :mode "\\.nix\\'")
 
 (use-package direnv
   :config
   (direnv-mode))
 
+
 (use-package color-theme-sanityinc-tomorrow
-  :init
+  :config
   (load-theme 'sanityinc-tomorrow-bright :no-confirm))
