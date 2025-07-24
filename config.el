@@ -21,37 +21,6 @@
 (recentf-mode 1)
 (global-eldoc-mode 1)
 
-(use-package evil
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll t)
-  (setq evil-want-C-i-jump nil)
-  :config
-  (evil-mode 1)
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-
-  ;; Use visual line motions even outside of visual-line-mode buffers
-  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
-  (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
-
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init))
-
-(use-package general
-  :demand t
-  :config
-  (general-create-definer keys
-    :keymaps '(normal insert visual emacs)
-    :prefix "SPC"
-    :global-prefix "C-SPC"))
-
 (use-package which-key
   :ensure nil
   :init (which-key-mode))
@@ -73,8 +42,7 @@
   :init
   (setq-default dired-dwim-target t)
   :config
-  (keys
-    "f" 'find-files))
+  )
 
 (use-package multiple-cursors)
 
@@ -90,9 +58,7 @@
   (vertico-mode))
 
 (use-package consult
-  :config
-  (keys
-   "b" 'consule-buffers))
+  :bind ("C-c b" . consult-buffer))
 
 (use-package corfu
   :init
@@ -116,10 +82,9 @@
   (yas-global-mode 1))
 
 (use-package magit
+  :bind ("C-c gs" . magit-status)
   :config
-  (magit-auto-revert-mode)
-  (keys
-   "g s" 'magit))
+  (magit-auto-revert-mode))
 
 (use-package magit-todos
   :after magit
@@ -136,8 +101,7 @@
   (setq projectile-switch-project-action #'projectile-dired)
   :config
   (projectile-mode)
-  (keys
-   "p" 'projectile-command-map))
+  :bind ("C-c p" . projectile-command-map))
 
 (use-package org
   :init
@@ -164,7 +128,6 @@
   :config
   (direnv-mode))
 
-
-(use-package color-theme-sanityinc-tomorrow
+(use-package kanagawa-themes
   :config
-  (load-theme 'sanityinc-tomorrow-bright :no-confirm))
+  (load-theme 'kanagawa-dragon t))
