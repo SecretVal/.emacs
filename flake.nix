@@ -22,14 +22,15 @@
         config = ./Config.org;
         defaultInitFile = true;
         alwaysEnsure = true;
-	alwaysTangle = true;
+        alwaysTangle = true;
 
 
-        extraEmacsPackages = epkgs: with pkgs; [
-          (with epkgs; [
-            treesit-grammars.with-all-grammars
-          ])
-          graphviz
+        extraEmacsPackages = epkgs:  [
+          epkgs.treesit-grammars.with-all-grammars
+          epkgs.use-package
+          epkgs.general
+
+          pkgs.graphviz
         ];
       };
     in {

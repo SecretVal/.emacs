@@ -1,129 +1,195 @@
 #+title Emacs Config
-#+property: header-args :tangle yes
+#+property: header-args :tangle yes :lexical t
 
 * Emacs Config
+** Nix shenanigans
+#+begin_src elisp
+  ;;; -*- lexical-binding: nil -*-
+  (require 'use-package)
+  (require 'bind-key)
+  (require 'general)
+
+#+end_src
 ** Options
 #+begin_src elisp
-(tool-bar-mode 0)
-(menu-bar-mode 0)
-(scroll-bar-mode 0)
-(column-number-mode 1)
-(show-paren-mode 1)
+  (setq use-package-always-ensure t)
+  (tool-bar-mode 0)
+  (menu-bar-mode 0)
+  (scroll-bar-mode 0)
+  (column-number-mode 1)
+  (show-paren-mode 1)
 
-(setq initial-buffer-choice t)
-(setq make-backup-files nil)
+  (setq initial-buffer-choice t)
+  (setq make-backup-files nil)
 
-(global-display-line-numbers-mode 1)
-(setq display-line-numbers-type 'relative)
+  (global-display-line-numbers-mode 1)
+  (setq display-line-numbers-type 'relative)
 
-(setq scroll-margin 15)
+  (setq scroll-margin 15)
 
-(which-key-mode 1)
-(global-auto-revert-mode)
+  (which-key-mode 1)
+  (global-auto-revert-mode)
 
-(setq-default show-trailing-whitespace t)
+  (setq-default show-trailing-whitespace t)
 
-(savehist-mode 1)
-(recentf-mode 1)
-(global-eldoc-mode 1)
+  (savehist-mode 1)
+  (recentf-mode 1)
+  (global-eldoc-mode 1)
 #+end_src
+** Evil
+*** Basic
+#+begin_src elisp
 
+  (use-package evil
+    :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-i-jump nil)
+    :config
+    (evil-mode 1)
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+
+    ;; Use visual line motions even outside of visual-line-mode buffers
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+    (evil-set-initial-state 'messages-buffer-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'normal))
+#+end_src
+*** Evil-Collection
+#+begin_src elisp
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init))
+#+end_src
+** General (Keybindings)
+#+begin_src elisp
+  (use-package general
+    :demand t
+    :config
+    (general-evil-setup))
+#+end_src
 ** Utility Plugins
 #+begin_src elisp
-(use-package which-key
-  :ensure nil
-  :init (which-key-mode))
+  (use-package which-key
+    :ensure nil
+    :init (which-key-mode))
 
-(use-package move-text
-  :config
-  (global-set-key (kbd "M-K") 'move-text-up)
-  (global-set-key (kbd "M-J") 'move-text-down))
+  (use-package move-text
+    :config
+    (global-set-key (kbd "M-K") 'move-text-up)
+    (global-set-key (kbd "M-J") 'move-text-down))
 
-(use-package beacon
-  :config
-  (beacon-mode))
+  (use-package beacon
+    :config
+    (beacon-mode))
 #+end_src
 ** Dired
 #+begin_src elisp
   (use-package dired
-  :ensure nil
-  :custom
-  dired-listing-switches "-alh"
-  dired-mouse-drag-files t
-  :init
-  (setq-default dired-dwim-target t))
+    :ensure nil
+    :custom
+    dired-listing-switches "-alh"
+    dired-mouse-drag-files t
+    :init
+    (setq-default dired-dwim-target t)
+    :general
+    (general-define-key
+     :states 'normal
+     :keymaps '(normal visual emacs override)
+     :prefix "SPC"
+     "f" 'find-file
+     )
+    )
 #+end_src
 ** Multiple Cursors
 #+begin_src elisp
-  ; TODO: Bindings
+  					; TODO: Bindings
   (use-package multiple-cursors)
 #+end_src
 
 ** Completion
 *** Marginalia
 #+begin_src elisp
-(use-package marginalia
-  :config
-  (marginalia-mode))
+  (use-package marginalia
+    :config
+    (marginalia-mode))
 #+end_src
 *** Vertico
 #+begin_src elisp
-(use-package vertico
-  :init
-  (setq vertico-resize t) ;; Grow and shrink the Vertico minibuffer
-  (setq vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
-  :config
-  (vertico-mode))
+  (use-package vertico
+    :init
+    (setq vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+    (setq vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
+    :config
+    (vertico-mode))
 #+end_src
 *** Consult
 #+begin_src elisp
   (use-package consult
-    :bind ("C-c b" . consult-buffer))
+    :general
+    :general
+    (general-define-key
+     :states 'normal
+     :keymaps '(normal visual emacs override)
+     :prefix "SPC"
+     "b" 'consult-buffer
+     )
+    )
 #+end_src
 *** Corfu
 #+begin_src elisp
   (use-package corfu
-  :init
-  (setq corfu-cycle t)
-  (setq corfu-auto t)
-  (setq corfu-auto-prefix 2)
-  (setq corfu-auto-delay 0.0)
-  (setq corfu-echo-documentation 0.25)
-  (setq corfu-preview-current 'insert)
-  (setq corfu-preselect-first nil)
-  :config
-  (global-corfu-mode))
+    :init
+    (setq corfu-cycle t)
+    (setq corfu-auto t)
+    (setq corfu-auto-prefix 2)
+    (setq corfu-auto-delay 0.0)
+    (setq corfu-echo-documentation 0.25)
+    (setq corfu-preview-current 'insert)
+    (setq corfu-preselect-first nil)
+    :config
+    (global-corfu-mode))
 #+end_src
 *** Orderless
 #+begin_src elisp
-(use-package orderless
-  :init
-  (setq completion-styles '(orderless basic))
-  (setq completion-category-overrides '((file (styles basic partial-completion)))))
+  (use-package orderless
+    :init
+    (setq completion-styles '(orderless basic))
+    (setq completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
 *** Yasnippets
 #+begin_src elisp
-(use-package yasnippet
-  :config
-  (yas-global-mode 1))
+  (use-package yasnippet
+    :config
+    (yas-global-mode 1))
 #+end_src
 ** Git
 *** Magit
 #+begin_src elisp
-(use-package magit
-  :bind ("C-c gs" . magit-status)
-  :config
-  (magit-auto-revert-mode))
+  (use-package magit
+    :general
+    (general-define-key
+     :states 'normal
+     :keymaps '(normal visual emacs override)
+     :prefix "SPC"
+     "gs" 'magit-status
+     )
+    :config
+    (magit-auto-revert-mode))
 
-(use-package magit-todos
-  :after magit
-  :config
-  (magit-todos-mode 1))
+  (use-package magit-todos
+    :after magit
+    :config
+    (magit-todos-mode 1))
 #+end_src
 *** Forge
 #+begin_src elisp
-(use-package forge
-  :after magit)
+  (use-package forge
+    :after magit)
 #+end_src
 ** Project
 #+begin_src elisp
@@ -140,41 +206,46 @@
 #+begin_src elisp
   (use-package org-roam
     :after org
-    :bind (("C-c n l" . org-roam-buffer-toggle)
-           ("C-c n f" . org-roam-node-find)
-           ("C-c n g" . org-roam-graph)
-           ("C-c n i" . org-roam-node-insert)
-           ("C-c n c" . org-roam-capture))
+    :general
+    (general-define-key
+     :states 'normal
+     :keymaps '(normal visual emacs override)
+     :prefix "SPC"
+     "n t" 'org-roam-buffer-toggle
+     "n f" 'org-roam-node-find
+     "n g" 'org-roam-graph
+     "n i" 'org-roam-node-insert
+     "n-c" 'org-roam-capture)
     :init
     (setq org-roam-directory "~/org-roam/")
     :config
     (org-roam-db-autosync-mode))
-  #+end_src
+#+end_src
 *** Org-Modern
 #+begin_src elisp
-(use-package org-modern
-  :after org
-  :init
-  (setq org-modern-star 'replace)
-  :config
-  (global-org-modern-mode))
+  (use-package org-modern
+    :after org
+    :init
+    (setq org-modern-star 'replace)
+    :config
+    (global-org-modern-mode))
 #+end_src
 ** Languages
 *** Nix
 #+begin_src elisp
-(use-package nix-ts-mode
-  :mode "\\.nix\\'")
+  (use-package nix-ts-mode
+    :mode "\\.nix\\'")
 #+end_src
 ** Direnv
 #+begin_src elisp
-(use-package direnv
-  :config
-  (direnv-mode))
+  (use-package direnv
+    :config
+    (direnv-mode))
 #+end_src
 ** Ui
 *** Theme
 #+begin_src  elisp
-(use-package kanagawa-themes
-  :config
-  (load-theme 'kanagawa-dragon t))
+  (use-package kanagawa-themes
+    :config
+    (load-theme 'kanagawa-dragon t))
 #+end_src
