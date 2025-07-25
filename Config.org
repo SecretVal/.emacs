@@ -1,4 +1,4 @@
-#+title Emacs Config
+#+title: Emacs Config
 #+property: header-args :tangle yes :lexical t
 
 * Emacs Config
@@ -107,7 +107,6 @@
 #+end_src
 ** Multiple Cursors
 #+begin_src elisp
-  					; TODO: Bindings
   (use-package multiple-cursors)
 #+end_src
 
@@ -248,4 +247,11 @@
   (use-package kanagawa-themes
     :config
     (load-theme 'kanagawa-dragon t))
+#+end_src
+
+** Misc
+*** elcord
+#+begin_src elisp
+  (use-package elcord
+    :config (elcord-mode))
 #+end_src
