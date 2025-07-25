@@ -1,3 +1,9 @@
+#+title Emacs Config
+#+property: header-args :tangle yes
+
+* Emacs Config
+** Options
+#+begin_src elisp
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 (scroll-bar-mode 0)
@@ -20,7 +26,10 @@
 (savehist-mode 1)
 (recentf-mode 1)
 (global-eldoc-mode 1)
+#+end_src
 
+** Utility Plugins
+#+begin_src elisp
 (use-package which-key
   :ensure nil
   :init (which-key-mode))
@@ -33,34 +42,47 @@
 (use-package beacon
   :config
   (beacon-mode))
-
-(use-package dired
+#+end_src
+** Dired
+#+begin_src elisp
+  (use-package dired
   :ensure nil
   :custom
   dired-listing-switches "-alh"
   dired-mouse-drag-files t
   :init
-  (setq-default dired-dwim-target t)
-  :config
-  )
+  (setq-default dired-dwim-target t))
+#+end_src
+** Multiple Cursors
+#+begin_src elisp
+  ; TODO: Bindings
+  (use-package multiple-cursors)
+#+end_src
 
-(use-package multiple-cursors)
-
+** Completion
+*** Marginalia
+#+begin_src elisp
 (use-package marginalia
   :config
   (marginalia-mode))
-
+#+end_src
+*** Vertico
+#+begin_src elisp
 (use-package vertico
   :init
   (setq vertico-resize t) ;; Grow and shrink the Vertico minibuffer
   (setq vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
   :config
   (vertico-mode))
-
-(use-package consult
-  :bind ("C-c b" . consult-buffer))
-
-(use-package corfu
+#+end_src
+*** Consult
+#+begin_src elisp
+  (use-package consult
+    :bind ("C-c b" . consult-buffer))
+#+end_src
+*** Corfu
+#+begin_src elisp
+  (use-package corfu
   :init
   (setq corfu-cycle t)
   (setq corfu-auto t)
@@ -71,16 +93,23 @@
   (setq corfu-preselect-first nil)
   :config
   (global-corfu-mode))
-
+#+end_src
+*** Orderless
+#+begin_src elisp
 (use-package orderless
   :init
   (setq completion-styles '(orderless basic))
   (setq completion-category-overrides '((file (styles basic partial-completion)))))
-
+#+end_src
+*** Yasnippets
+#+begin_src elisp
 (use-package yasnippet
   :config
   (yas-global-mode 1))
-
+#+end_src
+** Git
+*** Magit
+#+begin_src elisp
 (use-package magit
   :bind ("C-c gs" . magit-status)
   :config
@@ -90,44 +119,62 @@
   :after magit
   :config
   (magit-todos-mode 1))
-
+#+end_src
+*** Forge
+#+begin_src elisp
 (use-package forge
   :after magit)
-
-(use-package projectile
-  :init
-  (when (file-directory-p "~/Documents/coding")
-    (setq projectile-project-search-path '("~/Documents/coding")))
-  (setq projectile-switch-project-action #'projectile-dired)
-  :config
-  (projectile-mode)
-  :bind ("C-c p" . projectile-command-map))
-
-(use-package org
-  :init
-  (setq org-startup-indented t))
-
-(use-package org-roam
-  :after org
-  :init
-  (setq org-roam-directory "~/org-roam/")
-  :config
-  (org-roam-db-autosync-mode))
-
+#+end_src
+** Project
+#+begin_src elisp
+  (use-package project
+    :ensure nil)
+#+end_src
+** Org
+#+begin_src elisp
+  (use-package org
+    :init
+    (setq org-startup-indented t))
+#+end_src
+*** Org-Roam
+#+begin_src elisp
+  (use-package org-roam
+    :after org
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n g" . org-roam-graph)
+           ("C-c n i" . org-roam-node-insert)
+           ("C-c n c" . org-roam-capture))
+    :init
+    (setq org-roam-directory "~/org-roam/")
+    :config
+    (org-roam-db-autosync-mode))
+  #+end_src
+*** Org-Modern
+#+begin_src elisp
 (use-package org-modern
   :after org
   :init
   (setq org-modern-star 'replace)
   :config
   (global-org-modern-mode))
-
+#+end_src
+** Languages
+*** Nix
+#+begin_src elisp
 (use-package nix-ts-mode
   :mode "\\.nix\\'")
-
+#+end_src
+** Direnv
+#+begin_src elisp
 (use-package direnv
   :config
   (direnv-mode))
-
+#+end_src
+** Ui
+*** Theme
+#+begin_src  elisp
 (use-package kanagawa-themes
   :config
   (load-theme 'kanagawa-dragon t))
+#+end_src

@@ -19,9 +19,11 @@
 
       myEmacs = pkgs.emacsWithPackagesFromUsePackage {
         package = pkgs.emacs-pgtk;
-        config = ./config.el;
+        config = ./Config.org;
         defaultInitFile = true;
         alwaysEnsure = true;
+	alwaysTangle = true;
+
 
         extraEmacsPackages = epkgs: with pkgs; [
           (with epkgs; [
