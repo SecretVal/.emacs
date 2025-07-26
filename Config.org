@@ -4,11 +4,9 @@
 * Emacs Config
 ** Nix shenanigans
 #+begin_src elisp
-  ;;; -*- lexical-binding: nil -*-
   (require 'use-package)
   (require 'bind-key)
   (require 'general)
-
 #+end_src
 ** Options
 #+begin_src elisp
