@@ -102,9 +102,14 @@
     (persp-suppress-no-prefix-key-warning t)
     :init (persp-mode))
 #+end_src
-** Everything Everywhere All at Once
+** Sitting the tree
 #+begin_src elisp
-  (use-package emacs-everywhere)
+  (use-package treesit-auto
+    :custom
+    (treesit-auto-install nil)
+    :config
+    (treesit-auto-add-to-auto-mode-alist 'all)
+    (global-treesit-auto-mode))
 #+end_src
 ** Utility Plugins
 #+begin_src elisp
