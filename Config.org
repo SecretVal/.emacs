@@ -218,6 +218,9 @@
     :after magit
     :config
     (magit-todos-mode 1))
+
+  (with-eval-after-load 'transient
+    (define-key transient-map (kbd "<escape>") 'transient-quit-one))
 #+end_src
 *** Forge
 #+begin_src elisp
