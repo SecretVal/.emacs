@@ -193,7 +193,14 @@
 ** Project
 #+begin_src elisp
   (use-package project
-    :ensure nil)
+    :ensure nil
+    :general
+    (general-define-key
+     :states 'normal
+     :keymaps '(normal visual emacs override)
+     :prefix "SPC"
+     "p" '(:keymap project-prefix-map :which-key "project"))
+    )
 #+end_src
 ** Org
 #+begin_src elisp
