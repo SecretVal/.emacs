@@ -39,15 +39,16 @@
 ** Evil
 *** Basic
 #+begin_src elisp
-
   (use-package evil
     :init
     (setq evil-want-integration t)
     (setq evil-want-keybinding nil)
     (setq evil-want-C-u-scroll t)
     (setq evil-want-C-i-jump nil)
+    (setq evil-undo-system 'undo-fu)
     :config
     (evil-mode 1)
+    (setq evil-insert-state-cursor 'box)
     (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
     (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
@@ -56,7 +57,13 @@
     (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
     (evil-set-initial-state 'messages-buffer-mode 'normal)
-    (evil-set-initial-state 'dashboard-mode 'normal))
+    (evil-set-initial-state 'dashboard-mode 'normal)
+
+    (evil-global-set-key 'normal (kbd "C-h") 'evil-window-left)
+    (evil-global-set-key 'normal (kbd "C-k") 'evil-window-up)
+    (evil-global-set-key 'normal (kbd "C-j") 'evil-window-down)
+    (evil-global-set-key 'normal (kbd "C-l") 'evil-window-right)
+    )
 #+end_src
 *** Evil-Collection
 #+begin_src elisp
@@ -65,12 +72,39 @@
     :config
     (evil-collection-init))
 #+end_src
+*** Undo
+#+begin_src elisp
+  (use-package undo-fu
+    :commands (undo-fu-only-undo)
+    :defer nil)
+
+  (use-package undo-fu-session
+    :init (undo-fu-session-global-mode))
+#+end_src
 ** General (Keybindings)
 #+begin_src elisp
   (use-package general
     :demand t
     :config
     (general-evil-setup))
+#+end_src
+** Perspective
+#+begin_src elisp
+  (use-package perspective
+    :general
+    (general-define-key
+     :states 'normal
+     :keymaps '(normal visual emacs override)
+     :prefix "SPC"
+     "TAB" 'perspective-map
+     )
+    :custom
+    (persp-suppress-no-prefix-key-warning t)
+    :init (persp-mode))
+#+end_src
+** Everything Everywhere All at Once
+#+begin_src elisp
+  (use-package emacs-everywhere)
 #+end_src
 ** Utility Plugins
 #+begin_src elisp
@@ -206,7 +240,10 @@
 #+begin_src elisp
   (use-package org
     :init
-    (setq org-startup-indented t))
+    (setq org-startup-indented t)
+    :config
+    (require 'org-tempo)
+    )
 #+end_src
 *** Org-Roam
 #+begin_src elisp
@@ -235,6 +272,15 @@
     (setq org-modern-star 'replace)
     :config
     (global-org-modern-mode))
+#+end_src
+*** Evil Org
+#+begin_src elisp
+  (use-package evil-org
+    :after org
+    :hook (org-mode . (lambda () evil-org-mode))
+    :config
+    (require 'evil-org-agenda)
+    (evil-org-agenda-set-keys))
 #+end_src
 ** Languages
 *** Nix
