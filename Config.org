@@ -298,9 +298,21 @@
 ** Ui
 *** Theme
 #+begin_src  elisp
-  (use-package kanagawa-themes
+  (use-package doom-themes
+    :ensure t
+    :custom
+    (doom-themes-enable-bold t)   ; if nil, bold is universally disabled
+    (doom-themes-enable-italic t) ; if nil, italics is universally disabled
     :config
-    (load-theme 'kanagawa-dragon t))
+    (load-theme 'doom-snazzy t)
+
+    (doom-themes-visual-bell-config)
+    (doom-themes-org-config))
+#+end_src
+*** Transparency
+#+begin_src elisp
+  (set-frame-parameter nil 'alpha-background 90) ; For current frame
+  (add-to-list 'default-frame-alist '(alpha-background . 90)) ; For all new frames henceforth
 #+end_src
 
 ** Misc
@@ -308,4 +320,10 @@
 #+begin_src elisp
   (use-package elcord
     :config (elcord-mode))
+#+end_src
+*** erc
+#+begin_src elisp
+  (add-hook 'erc-mode-hook
+            (lambda ()
+              (setq show-trailing-whitespace nil)))
 #+end_src
