@@ -88,20 +88,6 @@
     :config
     (general-evil-setup))
 #+end_src
-** Perspective
-#+begin_src elisp
-  (use-package perspective
-    :general
-    (general-define-key
-     :states 'normal
-     :keymaps '(normal visual emacs override)
-     :prefix "SPC"
-     "TAB" 'perspective-map
-     )
-    :custom
-    (persp-suppress-no-prefix-key-warning t)
-    :init (persp-mode))
-#+end_src
 ** Sitting the tree
 #+begin_src elisp
   (use-package treesit-auto
