@@ -1,6 +1,26 @@
 #+title: Emacs Config
 #+property: header-args :tangle yes :lexical t
 
+* Table of Contents :toc:
+- [[#emacs-config][Emacs Config]]
+  - [[#nix-shenanigans][Nix shenanigans]]
+  - [[#options][Options]]
+  - [[#evil][Evil]]
+  - [[#general-keybindings][General (Keybindings)]]
+  - [[#sitting-the-tree][Sitting the tree]]
+  - [[#utility-plugins][Utility Plugins]]
+  - [[#dired][Dired]]
+  - [[#vterm][Vterm]]
+  - [[#multiple-cursors][Multiple Cursors]]
+  - [[#completion][Completion]]
+  - [[#git][Git]]
+  - [[#project][Project]]
+  - [[#org][Org]]
+  - [[#languages][Languages]]
+  - [[#direnv][Direnv]]
+  - [[#ui][Ui]]
+  - [[#misc][Misc]]
+
 * Emacs Config
 ** Nix shenanigans
 #+begin_src elisp
@@ -63,7 +83,9 @@
     (evil-global-set-key 'normal (kbd "C-k") 'evil-window-up)
     (evil-global-set-key 'normal (kbd "C-j") 'evil-window-down)
     (evil-global-set-key 'normal (kbd "C-l") 'evil-window-right)
-    )
+
+    (with-eval-after-load 'org
+      (evil-define-key 'normal org-mode-map (kbd "RET") 'org-open-at-point)))
 #+end_src
 *** Evil-Collection
 #+begin_src elisp
@@ -130,14 +152,17 @@
      )
     )
 #+end_src
+** Vterm
+#+begin_src elisp
+  (use-package vterm)
+#+end_src
 ** Multiple Cursors
 #+begin_src elisp
   (use-package multiple-cursors)
 #+end_src
-
 ** Completion
 *** Marginalia
-#+begin_src elisp
+  #+begin_src elisp
   (use-package marginalia
     :config
     (marginalia-mode))
@@ -234,6 +259,7 @@
 #+begin_src elisp
   (use-package org
     :init
+    (setq org-return-follows-link t)
     (setq org-startup-indented t)
     :config
     (require 'org-tempo)
@@ -267,11 +293,18 @@
     :config
     (global-org-modern-mode))
 #+end_src
+*** Toc-Org
+#+begin_src elisp
+  (use-package toc-org
+    :after org
+    :hook ((org-mode . toc-org-mode)
+           (markdown-mode . toc-org-mode)))
+#+end_src
 *** Evil Org
 #+begin_src elisp
   (use-package evil-org
     :after org
-    :hook (org-mode . (lambda () evil-org-mode))
+    :hook (org-mode . evil-org-mode)
     :config
     (require 'evil-org-agenda)
     (evil-org-agenda-set-keys))
