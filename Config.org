@@ -278,6 +278,7 @@
 #+end_src
 ** Languages
 *** Nix
+Idk why nix does not have a treesitter parser yet.
 #+begin_src elisp
   (use-package nix-ts-mode
     :mode "\\.nix\\'")
@@ -317,6 +318,9 @@
 *** erc
 #+begin_src elisp
   (add-hook 'erc-mode-hook
+            (lambda ()
+              (setq show-trailing-whitespace nil)))
+  (add-hook 'erc-list-mode-hook
             (lambda ()
               (setq show-trailing-whitespace nil)))
 #+end_src
